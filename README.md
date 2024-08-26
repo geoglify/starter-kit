@@ -47,3 +47,5 @@ Your application is now ready and available at http://localhost:8080.
 
 ### Customization
 The Geoglify Starter Kit is highly customizable. You can modify both the backend and frontend, and adjust the Docker setup to add new services or change existing configurations as needed. This project is open-source software licensed under the [MIT license](LICENSE).
+
+Inspired by: https://github.com/jdsantos/laravel-alpine-nginx-phpfpm-opcache-docker/blob/main/README.md

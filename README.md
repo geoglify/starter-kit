@@ -2,6 +2,8 @@
 
 Welcome to the Geoglify Starter Kit! This kit provides a ready-to-use foundation for building your new Laravel application, using Laravel Breeze with Vue.js. It comes with everything you need, including PostgreSQL/PostGIS integration and a Docker environment, so you can start coding right away. The frontend Vue.js will be compiled automatically.
 
+![image](https://github.com/user-attachments/assets/4c07965b-4d2b-470f-9779-2ba4fa87230a)
+
 ## What's Included?
 
 The Geoglify Starter Kit includes:

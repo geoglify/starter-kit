@@ -22,7 +22,7 @@ export default {
                         <v-menu activator="parent">
                             <v-list>
                                 <v-list-item link title="Profile" :href="route('profile.edit')" />
-                                <v-list-item link title="Sign out" @click="logout" />
+                                <v-list-item link title="Logout" @click="logout" />
                             </v-list>
                         </v-menu>
                     </v-btn>

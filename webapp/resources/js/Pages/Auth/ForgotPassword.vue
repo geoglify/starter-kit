@@ -34,7 +34,7 @@ const submit = () => {
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" @click="submit"
+                <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" type="submit"
                     color="gray" elevation="0">
                     Reset
                 </v-btn>

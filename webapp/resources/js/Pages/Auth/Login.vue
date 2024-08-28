@@ -54,14 +54,14 @@ const submit = () => {
 
                 <v-spacer></v-spacer>
                 
-                <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" @click="submit" color="gray" elevation="0">
+                <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" type="submit" color="gray" elevation="0">
                     Log in
                 </v-btn>
 
             </div>
 
             <div class="flex items-center mt-4">
-                <v-btn variant="text" :href="route('password.request')" block color="grey" class="text-caption">
+                <v-btn variant="text" :href="route('password.request')" block color="gray" class="text-body-2">
                     Forgot your password?
                 </v-btn>
             </div>

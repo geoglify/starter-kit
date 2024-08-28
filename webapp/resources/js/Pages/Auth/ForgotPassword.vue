@@ -1,9 +1,5 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 
 defineProps({
@@ -40,7 +36,7 @@ const submit = () => {
             <div class="flex items-center justify-end mt-4">
                 <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" @click="submit"
                     color="gray" elevation="0">
-                    Email Password Reset Link
+                    Reset
                 </v-btn>
             </div>
         </form>

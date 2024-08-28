@@ -14,3 +14,7 @@ html, body {
   padding: 0;
   overflow: hidden !important;
 }
+
+input {
+  --tw-ring-shadow: 0 0 #000 !important;
+}

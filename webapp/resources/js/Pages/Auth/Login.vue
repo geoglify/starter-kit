@@ -29,10 +29,6 @@ const submit = () => {
 
         <Head title="Log in" />
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
-        </div>
-
         <form @submit.prevent="submit">
 
             <div class="mt-4">
@@ -52,8 +48,8 @@ const submit = () => {
 
             <div class="flex items-center justify-end mt-4">
 
-                <v-btn variant="text" :href="route('password.request')">
-                    Forgot your password?
+                <v-btn variant="tonal" :href="route('register')">
+                    Register
                 </v-btn>
 
                 <v-spacer></v-spacer>
@@ -62,6 +58,12 @@ const submit = () => {
                     Log in
                 </v-btn>
 
+            </div>
+
+            <div class="flex items-center mt-4">
+                <v-btn variant="text" :href="route('password.request')" block color="grey" class="text-caption">
+                    Forgot your password?
+                </v-btn>
             </div>
         </form>
     </GuestLayout>

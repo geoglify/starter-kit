@@ -18,12 +18,13 @@ const customeTheme = {
         gray: "#1F2937",
         neutralgray: "#9BA6C1",
         green: "#2ED47A",
-        red: "#FF5c4E",
+        red: "#dc2626",
         darkblueshade: "#308DC2",
         lightgray: "#BDBDBD",
         lightpink: "#FFCFE3",
         white: "#FFFFFF",
         muted: "#6c757d",
+        background: "#f3f4f6",
     },
 };
 

@@ -25,7 +25,7 @@ const submit = () => {
             Already have an account? <a :href="route('login')" class="text-primary">Log in</a>
         </v-alert>
 
-        <form @submit.prevent="submit">
+        <form>
 
             <v-text-field v-model="form.name" label="Name" required variant="outlined" class="mt-4" autocomplete="name"
                 :error-messages="form.errors.name"></v-text-field>
@@ -42,7 +42,7 @@ const submit = () => {
 
             <div class="flex items-center justify-end mt-4">
 
-                <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" type="submit"
+                <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" @click.prevent="submit"
                     color="gray" elevation="0">
                     Register
                 </v-btn>

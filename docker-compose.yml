@@ -30,9 +30,20 @@ services:
       - "5432:5432"
     volumes:
       - database-data:/var/lib/postgresql/data
+
+  mailpit:  
+    image: axllent/mailpit:latest
+    container_name: mailpit
+    restart: always
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    volumes:
+      - mailpit_data:/data
       
 volumes:
   vendor-data:
   storage-data:
   database-data:
   node_modules-data:
+  mailpit_data:

@@ -29,7 +29,7 @@ const submit = () => {
 
         <Head title="Log in" />
 
-        <form @submit.prevent="submit">
+        <form>
 
             <div class="mt-4">
 
@@ -54,7 +54,7 @@ const submit = () => {
 
                 <v-spacer></v-spacer>
                 
-                <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" type="submit" color="gray" elevation="0">
+                <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" @click.prevent="submit" color="gray" elevation="0">
                     Log in
                 </v-btn>
 

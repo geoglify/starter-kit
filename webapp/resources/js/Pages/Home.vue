@@ -1,7 +1,7 @@
 <script setup>
 
 import Map from '@/Components/Map.vue';
-import WelcomeLayout from '@/Layouts/WelcomeLayout.vue';
+import HomeLayout from '@/Layouts/HomeLayout.vue';
 import { Head } from '@inertiajs/vue3';
 
 defineProps({
@@ -24,10 +24,10 @@ defineProps({
 
 <template>
 
-    <Head title="Welcome" />
+    <Head title="Home" />
 
-    <WelcomeLayout>
+    <HomeLayout>
         <Map></Map>
-    </WelcomeLayout>
+    </HomeLayout>
 
 </template>

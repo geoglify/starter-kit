@@ -32,10 +32,14 @@ const submit = () => {
 
         <Head title="Reset Password" />
 
+        <v-alert class="mb-5">
+            Reset your password, enter your new password and confirm it.
+        </v-alert>
+
         <form @submit.prevent="submit">
 
             <v-text-field v-model="form.email" label="Email" required variant="outlined" class="mt-4"
-                autocomplete="username" :error-messages="form.errors.email"></v-text-field>
+                autocomplete="username" :error-messages="form.errors.email" readonly></v-text-field>
 
             <v-text-field v-model="form.password" label="Password" required variant="outlined" class="mt-4"
                 autocomplete="new-password" type="password" :error-messages="form.errors.password"></v-text-field>
@@ -48,7 +52,7 @@ const submit = () => {
 
                 <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" @click="submit"
                     color="gray" elevation="0">
-                    Register
+                    Reset Password
                 </v-btn>
 
             </div>

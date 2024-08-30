@@ -27,15 +27,18 @@ const submit = () => {
             link that will allow you to choose a new one.
         </v-alert>
 
-        <form @submit.prevent="submit">
-            <div>
-                <v-text-field v-model="form.email" label="Email" outlined dense required autofocus variant="outlined"
-                    autocomplete="username" :error-messages="form.errors.email"></v-text-field>
-            </div>
+        <form>
+
+            <v-text-field v-model="form.email" label="Email" outlined dense required autofocus variant="outlined"
+                autocomplete="username" :error-messages="form.errors.email"></v-text-field>
+
+            <v-alert v-if="status" color="success">
+                {{ status }}
+            </v-alert>
 
             <div class="flex items-center justify-end mt-4">
-                <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" type="submit"
-                    color="gray" elevation="0">
+                <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" @click.prevent="submit" color="gray"
+                    elevation="0">
                     Reset
                 </v-btn>
             </div>

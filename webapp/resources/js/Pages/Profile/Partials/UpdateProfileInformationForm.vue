@@ -16,6 +16,13 @@ const form = useForm({
     name: user.name,
     email: user.email,
 });
+
+const submit = () => {
+    form.patch(route('profile.update'), {
+        onFinish: () => form.recentlySuccessful = true,
+    });
+};
+
 </script>
 
 <template>
@@ -28,7 +35,7 @@ const form = useForm({
             </p>
         </header>
 
-        <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
+        <form class="mt-6 space-y-6">
 
             <v-text-field v-model="form.name" label="Name" required variant="outlined" class="mt-4" autocomplete="name"
                 :error-messages="form.errors.name"></v-text-field>
@@ -52,7 +59,7 @@ const form = useForm({
 
             <v-alert v-if="form.recentlySuccessful" class="text-sm text-gray-600 dark:text-gray-400">Saved.</v-alert>
 
-            <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" type="submit" color="gray"
+            <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" @click.prevent="submit" color="gray"
                 elevation="0">Save</v-btn>
         </form>
     </section>

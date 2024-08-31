@@ -30,7 +30,7 @@ COPY conf.d/php/php.ini /usr/local/etc/php/conf.d/php.ini
 
 COPY conf.d/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
-# Copy Supervisor configuration
+# Copy Supervisor configuration (production and development)
 COPY conf.d/supervisor/supervisord.conf /etc/supervisord.conf
 COPY conf.d/supervisor/supervisord-dev.conf /etc/supervisord-dev.conf
 

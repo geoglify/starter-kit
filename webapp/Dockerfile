@@ -32,6 +32,7 @@ COPY conf.d/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 # Copy Supervisor configuration
 COPY conf.d/supervisor/supervisord.conf /etc/supervisord.conf
+COPY conf.d/supervisor/supervisord-dev.conf /etc/supervisord-dev.conf
 
 # Copy Laravel application files
 COPY . /opt/webapp

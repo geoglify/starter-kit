@@ -38,6 +38,11 @@ else
     composer install --no-interaction --no-scripts
 fi
 
+# Install Telescope
+if [ "$FIRST_INSTALL" = true ]; then
+    php artisan telescope:install
+fi
+
 # Run the migrations and seed the database
 if [ "$FIRST_INSTALL" = true ]; then
     php artisan migrate --seed --force
@@ -64,11 +69,17 @@ npm install
 
 # Check if running in production or development mode
 if [ "$PRODUCTION" = "1" ]; then
+    npm run build
     echo "Running in production mode"
 else
     echo "Running in development mode"
 fi
 
-
 # Start supervisord
-exec /usr/bin/supervisord -c /etc/supervisord.conf
+if [ "$PRODUCTION" = "1" ]; then
+    exec /usr/bin/supervisord -c /etc/supervisord.conf
+    echo "Supervisord started."
+else
+    exec /usr/bin/supervisord -c /etc/supervisord-dev.conf
+    echo "Supervisord-dev started."
+fi

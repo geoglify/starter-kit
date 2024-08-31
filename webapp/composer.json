@@ -9,6 +9,7 @@
         "inertiajs/inertia-laravel": "^1.0",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
+        "laravel/telescope": "^5.2",
         "laravel/tinker": "^2.9",
         "tightenco/ziggy": "^2.0"
     },
@@ -49,6 +50,10 @@
             "@php artisan key:generate --ansi",
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
+        ],
+        "setup":
+        [
+            "npm run build"
         ]
     },
     "extra": {

@@ -4,13 +4,17 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 
 export default {
     mounted() {
+
+        // Create a new map instance
         const map = new maplibregl.Map({
-            container: 'map', // container id
-            style: 'https://demotiles.maplibre.org/style.json', // style URL
-            center: [0, 0], // starting position [lng, lat]
-            zoom: 1 // starting zoom
+            container: 'map',
+            style: 'https://demotiles.maplibre.org/style.json',
+            center: [0, 0],
+            zoom: 1,
+            hash: "map", // Enable hash
         });
 
+        // Add navigation control
         map.addControl(new maplibregl.NavigationControl());
     }
 }

@@ -3,8 +3,8 @@ services:
     build: ./webapp
     container_name: webapp
     environment:
-      PHP_OPCACHE_ENABLE: 1
-      PRODUCTION: 1
+      PHP_OPCACHE_ENABLE: 0
+      PRODUCTION: 0
     ports:
       - 8080:80
       - 5173:5173
@@ -40,6 +40,14 @@ services:
       - "1025:1025"
     volumes:
       - mailpit_data:/data
+
+  redis:
+    image: redis:latest
+    command: redis-server --appendonly yes
+    volumes:
+    - .docker/redis/data:/data
+    ports:
+    - 6379:6379
       
 volumes:
   vendor-data:

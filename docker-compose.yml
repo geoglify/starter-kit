@@ -2,6 +2,7 @@ services:
   webapp:
     build: ./webapp
     container_name: webapp
+    restart: always
     environment:
       PHP_OPCACHE_ENABLE: 0
       PRODUCTION: 0

@@ -1,5 +1,10 @@
 <script>
 export default {
+    data() {
+        return {
+            menubar: false,
+        };
+    },
     methods: {
         logout() {
             this.$inertia.post(route('logout'));
@@ -12,7 +17,9 @@ export default {
         <v-app>
             <v-app-bar title="Geoglify Starter Kit" elevation="0">
 
-                <v-spacer></v-spacer>
+                <template #prepend>
+                    <v-app-bar-nav-icon @click.prevent="menubar = !menubar"></v-app-bar-nav-icon>
+                </template>
 
                 <template #append>
                     <v-btn class="mr-5">
@@ -35,6 +42,12 @@ export default {
                 <slot name="breadcrumbs" />
                 <v-spacer></v-spacer>
             </v-system-bar>
+
+            <v-navigation-drawer v-if="menubar">
+                <v-list>
+                    <v-list-item title="Users" :href="route()"></v-list-item>
+                </v-list>
+            </v-navigation-drawer>
 
             <v-main>
                 <v-container>

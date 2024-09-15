@@ -23,3 +23,19 @@ export default {
 <template>
     <div class="w-full h-full" id="map"></div>
 </template>
+
+<style>
+#app {
+    height: 100vh;
+    width: 100vw;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+</style>

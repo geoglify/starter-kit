@@ -41,8 +41,7 @@ const updateUser = () => {
                     <v-text-field v-model="form.name" label="Name" outlined dense required variant="outlined" />
                     <v-text-field v-model="form.email" label="Email" outlined dense required variant="outlined" />
                     <v-text-field v-model="form.password" label="Password" outlined dense variant="outlined" />
-                    <v-text-field v-model="form.password_confirmation" label="Confirm Password" outlined dense
-                        variant="outlined" />
+                    <v-text-field v-model="form.password_confirmation" label="Confirm Password" outlined dense variant="outlined" />
                     <v-btn type="submit" color="black" variant="tonal" class="mt-4">Update</v-btn>
                 </v-form>
             </v-card-text>

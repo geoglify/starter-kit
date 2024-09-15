@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,11 +12,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        //create root and default password
+        User::create([
+            'name' => 'root',
+            'email' => 'root@geoglify.com',
+            'password' => bcrypt('geoglify2024'),
+            'is_ldap' => false,
+            'is_admin' => true,
         ]);
     }
 }

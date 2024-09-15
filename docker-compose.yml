@@ -10,10 +10,10 @@ services:
       - 8080:80
       - 5173:5173
     volumes:
-      - ./webapp:/opt/webapp
-      - node_modules-data:/opt/webapp/node_modules
-      - vendor-data:/opt/webapp/vendor
-      - storage-data:/opt/webapp/storage
+      - ./webapp:/var/www/webapp
+      - node_modules-data:/var/www/webapp/node_modules
+      - vendor-data:/var/www/webapp/vendor
+      - storage-data:/var/www/webapp/storage
     healthcheck:
       test: ["CMD", "curl", "-f", "http://webapp/"]
       interval: 30s
@@ -31,6 +31,10 @@ services:
       - "5432:5432"
     volumes:
       - database-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
 
   mailpit:  
     image: axllent/mailpit:latest
@@ -44,11 +48,25 @@ services:
 
   redis:
     image: redis:latest
+    container_name: redis
+    restart: always
     command: redis-server --appendonly yes
     volumes:
-    - .docker/redis/data:/data
+      - redis_data:/data
     ports:
-    - 6379:6379
+      - 6379:6379
+
+  ldap:
+    image: osixia/openldap
+    container_name: ldap
+    environment:
+        - LDAP_ORGANISATION=geoglify
+        - LDAP_DOMAIN=geoglify.com
+        - "LDAP_BASE_DN=dc=geoglify,dc=com"
+        - LDAP_ADMIN_PASSWORD=geoglify
+    ports:
+        - 389:389
+        - 636:636
       
 volumes:
   vendor-data:
@@ -56,3 +74,4 @@ volumes:
   database-data:
   node_modules-data:
   mailpit_data:
+  redis_data:

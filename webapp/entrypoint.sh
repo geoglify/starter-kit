@@ -1,7 +1,10 @@
 #!/bin/sh
 
 # Set the base directory for the app
-BASEDIR=/opt/webapp
+BASEDIR=/var/www/webapp
+
+# Remove Cache
+rm -rf $BASEDIR/bootstrap/cache/*
 
 # Flag to check if it's a fresh install
 FIRST_INSTALL=false
@@ -38,11 +41,6 @@ else
     composer install --no-interaction --no-scripts
 fi
 
-# Install Telescope
-if [ "$FIRST_INSTALL" = true ]; then
-    php artisan telescope:install
-fi
-
 # Run the migrations and seed the database
 if [ "$FIRST_INSTALL" = true ]; then
     php artisan migrate --seed --force
@@ -63,6 +61,9 @@ rm -rf public/storage
 
 # Build up a new storage link
 php artisan storage:link
+
+# Set the correct permissions
+chmod -R ugo+rw storage
 
 # Install node dependencies
 npm install

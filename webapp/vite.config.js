@@ -28,4 +28,9 @@ export default defineConfig({
             },
         }),
     ],
+    resolve: {
+        alias: {
+            "@assets": "/resources/assets",
+        },
+    },
 });

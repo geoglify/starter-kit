@@ -1,7 +1,7 @@
-FROM php:8.3-fpm-alpine
+FROM php:8.2-fpm-alpine
 
 # Set working directory
-WORKDIR /opt/webapp
+WORKDIR /var/www/webapp
 
 # Install additional packages
 RUN apk --no-cache add \
@@ -15,6 +15,12 @@ RUN set -ex \
     && apk --no-cache add \
       postgresql-dev
 
+# Install LDAP extension
+RUN apk update \
+    && apk add --no-cache openldap-dev \
+    && docker-php-ext-install ldap
+
+# Install Postgres extension
 RUN docker-php-ext-install pdo pdo_pgsql
 
 # Install composer
@@ -35,12 +41,12 @@ COPY conf.d/supervisor/supervisord.conf /etc/supervisord.conf
 COPY conf.d/supervisor/supervisord-dev.conf /etc/supervisord-dev.conf
 
 # Copy Laravel application files
-COPY . /opt/webapp
+COPY . /var/www/webapp
 
 # Set up permissions
-RUN chown -R www-data:www-data /opt/webapp \
-    && chmod -R 755 /opt/webapp/storage \
-    && chmod -R ugo+rw /opt/webapp/storage
+RUN chown -R www-data:www-data /var/www/webapp \
+    && chmod -R 755 /var/www/webapp/storage \
+    && chmod -R ugo+rw /var/www/webapp/storage
 
 # Scheduler setup
 
@@ -48,7 +54,7 @@ RUN chown -R www-data:www-data /opt/webapp \
 RUN touch /var/log/cron.log
 
 # Add cron job directly to crontab
-RUN echo "* * * * * /usr/local/bin/php /opt/webapp/artisan schedule:run >> /var/log/cron.log 2>&1" | crontab -
+RUN echo "* * * * * /usr/local/bin/php /var/www/webapp/artisan schedule:run >> /var/log/cron.log 2>&1" | crontab -
 
 # Expose ports
 EXPOSE 80

@@ -2,17 +2,12 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\LdapController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Home', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return redirect('/dashboard');
 });
 
 Route::get('/dashboard', function () {
@@ -25,12 +20,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
-    /* Add the following routes */
     Route::resource('users', UserController::class);
-    Route::get('/users/import', [UserController::class, 'import'])->name('users.import');
+    Route::post('/users/list', [UserController::class, 'list'])->name('users.list');
+
+    Route::get('/ldap', [LdapController::class, 'index'])->name('ldap.index');
+    Route::post('/ldap/list', [LdapController::class, 'list'])->name('ldap.list');
+    Route::post('/ldap/add', [LdapController::class, 'add'])->name('ldap.add');
+    Route::post('/ldap/remove', [LdapController::class, 'remove'])->name('ldap.remove');
     
 });
-
-
 
 require __DIR__.'/auth.php';

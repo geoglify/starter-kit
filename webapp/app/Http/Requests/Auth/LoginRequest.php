@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
+use LdapRecord\Connection;
+use Illuminate\Support\Facades\Log;
 
 class LoginRequest extends FormRequest
 {
@@ -27,7 +30,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'email' => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
@@ -41,15 +44,77 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+        $credentials = $this->only('email', 'password');
 
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
+        $connection = new Connection([
+            'hosts' => [env('LDAP_HOST', '127.0.0.1')],
+            'username' => env('LDAP_USERNAME', 'cn=user,dc=local,dc=com'),
+            'password' => env('LDAP_PASSWORD', 'secret'),
+            'port' => env('LDAP_PORT', 389),
+            'base_dn' => env('LDAP_BASE_DN', 'dc=local,dc=com'),
+            'timeout' => env('LDAP_TIMEOUT', 5),
+            'use_ssl' => env('LDAP_SSL', false),
+            'use_tls' => env('LDAP_TLS', false),
+            'use_sasl' => env('LDAP_SASL', false)
+        ]);
+
+        // Append domain to email if not present
+        if (strpos($credentials['email'], '@') === false) {
+            $credentials['email'] .= '@' . env('LDAP_DOMAIN', 'local.com');
         }
 
+        $ldap_is_ready = false;
+
+        try {
+            $connection->connect();
+            $ldap_is_ready = true;
+        } catch (\LdapRecord\Auth\BindException $e) {
+            Log::error('LDAP connection failed: ' . $e->getMessage());
+        }
+
+        // Attempt LDAP authentication first before falling back to database authentication
+        if ($ldap_is_ready && $connection->auth()->attempt($credentials['email'], $credentials['password'], $this->boolean('remember'))) {
+
+            // Check if user exists in database
+            $user = User::where('email', $credentials['email'])->first();
+
+            // If user exists, authenticate user
+            if ($user) {
+                Auth::login($user, $this->boolean('remember'));
+
+                $this->clearRateLimiter();
+                return;
+            }
+        }
+
+        // Fallback to default database authentication
+        if (Auth::attempt($credentials, $this->boolean('remember'))) {
+            $this->clearRateLimiter();
+            return;
+        }
+
+        // If both LDAP and database authentication fail
+        $this->incrementRateLimiter();
+
+        throw ValidationException::withMessages([
+            'email' => trans('auth.failed'),
+        ]);
+    }
+
+    /**
+     * Clear the rate limiter for the current request.
+     */
+    protected function clearRateLimiter(): void
+    {
         RateLimiter::clear($this->throttleKey());
+    }
+
+    /**
+     * Increment the rate limiter for the current request.
+     */
+    protected function incrementRateLimiter(): void
+    {
+        RateLimiter::hit($this->throttleKey());
     }
 
     /**
@@ -80,6 +145,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
     }
 }

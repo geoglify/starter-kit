@@ -18,9 +18,8 @@ export default {
 
             // Headers for the data table
             headers: [
-                { title: 'Name', key: 'name', align: 'start', sortable: false },
-                { title: 'Email', key: 'email', align: 'start', sortable: false },
-                { title: '', key: 'tag', align: 'start', sortable: false },
+                { title: 'Title', key: 'title', align: 'start', sortable: false },
+                { title: 'Description', key: 'description', align: 'start', sortable: false },
                 { title: '', key: 'actions', align: 'end', sortable: false },
             ],
 
@@ -38,7 +37,7 @@ export default {
             this.loading = true;
 
             // Fetch items from the server
-            fetch(route('users.list'), {
+            fetch(route('roles.list'), {
                 method: "post",
                 body: JSON.stringify({
                     page: page,
@@ -59,7 +58,7 @@ export default {
             });
         },
 
-        // Method to delete a user
+        // Method to delete a role
         openDeleteModal(id) {
             this.deleteId = id;
             this.deleteModalOpen = true;
@@ -71,13 +70,13 @@ export default {
             this.deleteModalOpen = false;
         },
 
-        // Method to delete the user
-        async deleteUser() {
+        // Method to delete the role
+        async deleteRole() {
             // Close the modal
             this.deleteModalOpen = false;
 
-            // Delete the user
-            await fetch(route('users.destroy', this.deleteId), {
+            // Delete the role
+            await fetch(route('roles.destroy', this.deleteId), {
                 method: "DELETE",
             }).then(() => {
                 // Reload the items
@@ -90,21 +89,20 @@ export default {
 
 <template>
 
-    <Head title="Users" />
+    <Head title="Roles" />
 
     <AuthenticatedLayout>
         <template #breadcrumbs>
             <v-breadcrumbs :items="[
                 { title: 'Home', disabled: false, href: '/' },
-                { title: 'Users', disabled: true }
+                { title: 'Roles', disabled: true }
             ]" divider="/" />
         </template>
 
-        <v-card class="max-w-7xl mx-auto pa-6 my-6" title="Users" subtitle="List of users">
+        <v-card class="max-w-7xl mx-auto pa-6 my-6" title="Roles" subtitle="List of roles">
 
             <template v-slot:append>
-                <v-btn color="black" variant="tonal" :href="route('users.create')" class="ml-2">Create</v-btn>
-                <v-btn color="black" variant="tonal" :href="route('ldap.index')" class="ml-2">Import</v-btn>
+                <v-btn color="black" variant="tonal" :href="route('roles.create')" class="ml-2">Create</v-btn>
             </template>
 
 
@@ -122,7 +120,7 @@ export default {
 
                     <template v-slot:item.actions="{ item }">
                         <v-btn color="black" class="ml-2" variant="text" density="comfortable" icon
-                            :href="route('users.edit', item.id)" v-if="!item.is_ldap">
+                            :href="route('roles.edit', item.id)" v-if="!item.is_ldap">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
                         <v-btn color="red" class="ml-2" variant="text" density="comfortable" icon
@@ -139,19 +137,19 @@ export default {
         <v-dialog v-model="deleteModalOpen" width="500">
             <v-card>
                 <v-card-title class="pt-4">
-                    <span class="headline px-3">Are you sure you want to delete this account?</span>
+                    <span class="headline px-3">Are you sure you want to delete this role?</span>
                 </v-card-title>
 
                 <v-card-text>
                     <v-alert class="mb-4">
-                        Once this account is deleted, all of its resources and data will be permanently deleted.
+                        Once this role is deleted, all of its resources and data will be permanently deleted.
                     </v-alert>
 
                 </v-card-text>
 
                 <v-card-actions>
                     <v-btn @click="closeModal" color="grey">Cancel</v-btn>
-                    <v-btn @click="deleteUser" color="red" class="mr-2">Delete</v-btn>
+                    <v-btn @click="deleteRole" color="red" class="mr-2">Delete</v-btn>
                 </v-card-actions>
 
             </v-card>

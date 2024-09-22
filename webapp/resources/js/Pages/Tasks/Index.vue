@@ -18,14 +18,10 @@ export default {
 
             // Headers for the data table
             headers: [
-                { title: 'Name', key: 'name', align: 'start', sortable: false },
-                { title: 'Email', key: 'email', align: 'start', sortable: false },
-                { title: '', key: 'tag', align: 'start', sortable: false },
-                { title: '', key: 'actions', align: 'end', sortable: false },
             ],
 
             deleteModalOpen: false,
-            deleteId: null
+            deleteTaskId: null
 
         };
     },
@@ -38,7 +34,7 @@ export default {
             this.loading = true;
 
             // Fetch items from the server
-            fetch(route('users.list'), {
+            fetch(route('tasks.list'), {
                 method: "post",
                 body: JSON.stringify({
                     page: page,
@@ -61,13 +57,13 @@ export default {
 
         // Method to delete a user
         openDeleteModal(id) {
-            this.deleteId = id;
+            this.deleteTaskId = id;
             this.deleteModalOpen = true;
         },
 
         // Method to close the modal
         closeModal() {
-            this.deleteId = null;
+            this.deleteTaskId = null;
             this.deleteModalOpen = false;
         },
 
@@ -77,7 +73,7 @@ export default {
             this.deleteModalOpen = false;
 
             // Delete the user
-            await fetch(route('users.destroy', this.deleteId), {
+            await fetch(route('tasks.destroy', this.deleteTaskId), {
                 method: "DELETE",
             }).then(() => {
                 // Reload the items
@@ -90,21 +86,20 @@ export default {
 
 <template>
 
-    <Head title="Users" />
+    <Head title="Tasks" />
 
     <AuthenticatedLayout>
         <template #breadcrumbs>
             <v-breadcrumbs :items="[
                 { title: 'Home', disabled: false, href: '/' },
-                { title: 'Users', disabled: true }
+                { title: 'Tasks', disabled: true }
             ]" divider="/" />
         </template>
 
-        <v-card class="max-w-7xl mx-auto pa-6 my-6" title="Users" subtitle="List of users">
+        <v-card class="max-w-7xl mx-auto pa-6 my-6" title="Tasks" subtitle="List of tasks">
 
             <template v-slot:append>
-                <v-btn color="black" variant="tonal" :href="route('users.create')" class="ml-2">Create</v-btn>
-                <v-btn color="black" variant="tonal" :href="route('ldap.index')" class="ml-2">Import</v-btn>
+                <v-btn color="black" variant="tonal" :href="route('tasks.create')" class="ml-2">Create</v-btn>
             </template>
 
 
@@ -116,13 +111,9 @@ export default {
                 <v-data-table-server v-model:items-per-page="itemsPerPage" :headers="headers" :items="serverItems"
                     :items-length="totalItems" :loading="loading" :search="search" @update:options="loadItems">
 
-                    <template v-slot:item.tag="{ item }">
-                        <v-chip v-if="item.is_ldap" color="blue" size="small">LDAP</v-chip>
-                    </template>
-
                     <template v-slot:item.actions="{ item }">
                         <v-btn color="black" class="ml-2" variant="text" density="comfortable" icon
-                            :href="route('users.edit', item.id)" v-if="!item.is_ldap">
+                            :href="route('tasks.edit', item.id)" v-if="!item.is_ldap">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
                         <v-btn color="red" class="ml-2" variant="text" density="comfortable" icon
@@ -139,12 +130,12 @@ export default {
         <v-dialog v-model="deleteModalOpen" width="500">
             <v-card>
                 <v-card-title class="pt-4">
-                    <span class="headline px-3">Are you sure you want to delete this account?</span>
+                    <span class="headline px-3">Are you sure you want to delete this tasks?</span>
                 </v-card-title>
 
                 <v-card-text>
                     <v-alert class="mb-4">
-                        Once this account is deleted, all of its resources and data will be permanently deleted.
+                        Once this tasks is deleted, all of its resources and data will be permanently deleted.
                     </v-alert>
 
                 </v-card-text>

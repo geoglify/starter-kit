@@ -5,3 +5,7 @@
 input {
   --tw-ring-shadow: 0 0 #000 !important;
 }
+
+* {
+  font-family: 'Figtree', sans-serif !important;
+}

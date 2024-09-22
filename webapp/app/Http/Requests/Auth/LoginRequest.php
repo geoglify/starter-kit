@@ -36,17 +36,11 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Attempt to authenticate the request's credentials.
-     *
-     * @throws \Illuminate\Validation\ValidationException
+     * Get the LDAP connection.
      */
-    public function authenticate(): void
+    protected function getLdapConnection(): Connection
     {
-        $this->ensureIsNotRateLimited();
-
-        $credentials = $this->only('email', 'password');
-
-        $connection = new Connection([
+        return new Connection([
             'hosts' => [env('LDAP_HOST', '127.0.0.1')],
             'username' => env('LDAP_USERNAME', 'cn=user,dc=local,dc=com'),
             'password' => env('LDAP_PASSWORD', 'secret'),
@@ -57,50 +51,79 @@ class LoginRequest extends FormRequest
             'use_tls' => env('LDAP_TLS', false),
             'use_sasl' => env('LDAP_SASL', false)
         ]);
+    }
 
-        // Append domain to email if not present
+    /**
+     * Check if the LDAP connection is ready.
+     */
+    protected function isLdapReady(Connection $connection): bool
+    {
+        try {
+            $connection->connect();
+            return true;
+        } catch (\LdapRecord\Auth\BindException $e) {
+            Log::error('LDAP connection failed: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Attempt LDAP authentication.
+     */
+    protected function attemptLdapAuthentication(array $credentials): bool
+    {
+        if (env('LDAP_ENABLED', false)) {
+            $connection = $this->getLdapConnection();
+
+            if ($this->isLdapReady($connection) && $connection->auth()->attempt($credentials['email'], $credentials['password'], $this->boolean('remember'))) {
+                $user = User::where('email', $credentials['email'])->first();
+
+                if ($user) {
+                    Auth::login($user, $this->boolean('remember'));
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Attempt database authentication.
+     */
+    protected function attemptDatabaseAuthentication(array $credentials): bool
+    {
+        return Auth::attempt($credentials, $this->boolean('remember'));
+    }
+
+    /**
+     * Attempt to authenticate the request's credentials.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function authenticate(): void
+    {
+        $this->ensureIsNotRateLimited();
+
+        $credentials = $this->only('email', 'password');
+
+        // Adicionar domínio ao email caso não tenha
         if (strpos($credentials['email'], '@') === false) {
             $credentials['email'] .= '@' . env('LDAP_DOMAIN', 'local.com');
         }
 
-        $ldap_is_ready = false;
-
-        try {
-            $connection->connect();
-            $ldap_is_ready = true;
-        } catch (\LdapRecord\Auth\BindException $e) {
-            Log::error('LDAP connection failed: ' . $e->getMessage());
-        }
-
-        // Attempt LDAP authentication first before falling back to database authentication
-        if ($ldap_is_ready && $connection->auth()->attempt($credentials['email'], $credentials['password'], $this->boolean('remember'))) {
-
-            // Check if user exists in database
-            $user = User::where('email', $credentials['email'])->first();
-
-            // If user exists, authenticate user
-            if ($user) {
-                Auth::login($user, $this->boolean('remember'));
-
-                $this->clearRateLimiter();
-                return;
-            }
-        }
-
-        // Fallback to default database authentication
-        if (Auth::attempt($credentials, $this->boolean('remember'))) {
+        if ($this->attemptLdapAuthentication($credentials) || $this->attemptDatabaseAuthentication($credentials)) {
             $this->clearRateLimiter();
             return;
         }
 
-        // If both LDAP and database authentication fail
         $this->incrementRateLimiter();
 
         throw ValidationException::withMessages([
             'email' => trans('auth.failed'),
         ]);
     }
-
+    
     /**
      * Clear the rate limiter for the current request.
      */

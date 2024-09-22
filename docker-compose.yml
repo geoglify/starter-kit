@@ -11,9 +11,9 @@ services:
       - 5173:5173
     volumes:
       - ./webapp:/var/www/webapp
-      - node_modules-data:/var/www/webapp/node_modules
-      - vendor-data:/var/www/webapp/vendor
-      - storage-data:/var/www/webapp/storage
+      - geoglify-node-modules-data:/var/www/webapp/node_modules
+      - geoglify-vendor-data:/var/www/webapp/vendor
+      - geoglify-storage-data:/var/www/webapp/storage
     healthcheck:
       test: ["CMD", "curl", "-f", "http://webapp/"]
       interval: 30s
@@ -30,7 +30,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - database-data:/var/lib/postgresql/data
+      - geoglify-database-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
@@ -44,7 +44,7 @@ services:
       - "8025:8025"
       - "1025:1025"
     volumes:
-      - mailpit_data:/data
+      - geoglify-mailpit-data:/data
 
   redis:
     image: redis:latest
@@ -52,26 +52,14 @@ services:
     restart: always
     command: redis-server --appendonly yes
     volumes:
-      - redis_data:/data
+      - geoglify-redis-data:/data
     ports:
       - 6379:6379
-
-  ldap:
-    image: osixia/openldap
-    container_name: ldap
-    environment:
-        - LDAP_ORGANISATION=geoglify
-        - LDAP_DOMAIN=geoglify.com
-        - "LDAP_BASE_DN=dc=geoglify,dc=com"
-        - LDAP_ADMIN_PASSWORD=geoglify
-    ports:
-        - 389:389
-        - 636:636
       
 volumes:
-  vendor-data:
-  storage-data:
-  database-data:
-  node_modules-data:
-  mailpit_data:
-  redis_data:
+  geoglify-vendor-data:
+  geoglify-storage-data:
+  geoglify-database-data:
+  geoglify-node-modules-data:
+  geoglify-mailpit-data:
+  geoglify-redis-data:

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Role;
 
 class UserController extends Controller
 {
@@ -30,7 +33,7 @@ class UserController extends Controller
 
             // Select specific fields from Users table
 
-            $users = User::select('id', 'name', 'email', 'is_ldap', 'is_admin')->get();
+            $users = User::select('id', 'name', 'email', 'is_ldap')->get();
 
             // Filter and map users using collections
             $filteredUsers = collect($users)->filter(function ($user) use ($search) {
@@ -45,7 +48,7 @@ class UserController extends Controller
             })->map(function ($user) {
                 // Map user data
                 return $user;
-            })->sortBy('name');
+            })->sortBy('id');
 
             $total = $filteredUsers->count();
 
@@ -59,6 +62,7 @@ class UserController extends Controller
                 'perPage' => $itemsPerPage,
                 'currentPage' => $page,
             ]);
+
         } catch (ValidationException $e) {
 
             // Handle validation errors
@@ -82,27 +86,27 @@ class UserController extends Controller
         return Inertia::render('Users/Create');
     }
 
-    public function store()
+    public function store(StoreUserRequest $request)
     {
-        User::create(request()->all());
+        User::create($request->validated());
         return redirect()->route('users.index');
     }
 
     public function edit(User $user)
     {
-        return Inertia::render('Users/Edit', ['user' => $user]);
+        $roles = Role::all();
+        return Inertia::render('Users/Edit', ['user' => $user->load('roles'), 'roles' => $roles]);
     }
 
-    public function update(User $user)
+    public function update(UpdateUserRequest $request, $id)
     {
         //if password is not provided, update other fields
-        if (request('password') == null) {
-            $user->update(request()->except('password'));
-            return redirect()->route('users.index');
+        if (!$request->password) {
+            $user = User::find($id);
+            $user->update($request->except('password'));
         } else {
-            //if password is provided, update all fields
-            $user->update(request()->all());
-            return redirect()->route('users.index');
+            $user = User::find($id);
+            $user->update($request->validated());
         }
     }
 

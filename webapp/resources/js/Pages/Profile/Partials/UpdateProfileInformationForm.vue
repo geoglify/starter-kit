@@ -28,7 +28,7 @@ const submit = () => {
 <template>
     <section>
         <header>
-            <h2>Profile Information</h2>
+            <h2 class="font-weight-black">Profile Information</h2>
 
             <p class="mt-1 text-sm text-gray-400">
                 Update your account's profile information and email address.
@@ -59,8 +59,8 @@ const submit = () => {
 
             <v-alert v-if="form.recentlySuccessful" class="text-sm text-gray-600 dark:text-gray-400">Saved.</v-alert>
 
-            <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" @click.prevent="submit" color="gray"
-                elevation="0">Save</v-btn>
+            <v-btn :readonly="form.processing" @click.prevent="submit" color="primary" elevation="0" 
+                :disabled="form.processing">Save</v-btn>
         </form>
     </section>
 </template>

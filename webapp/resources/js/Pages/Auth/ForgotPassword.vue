@@ -37,7 +37,14 @@ const submit = () => {
             </v-alert>
 
             <div class="flex items-center justify-end mt-4">
-                <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" @click.prevent="submit" color="gray"
+
+                <v-btn :href="route('login')" color="primary" elevation="0">
+                    Back to login
+                </v-btn>
+
+                <v-spacer></v-spacer>
+
+                <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" @click.prevent="submit" color="primary"
                     elevation="0">
                     Reset
                 </v-btn>

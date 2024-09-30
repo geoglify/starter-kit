@@ -3,7 +3,6 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LdapController;
-use App\Http\Controllers\TaskController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,10 +23,7 @@ Route::middleware('auth')->group(function () {
     
     Route::resource('users', UserController::class);
     Route::post('/users/list', [UserController::class, 'list'])->name('users.list');
-
-    Route::resource('tasks', TaskController::class);
-    Route::post('/tasks/list', [TaskController::class, 'list'])->name('tasks.list');
-
+    
     Route::resource('/roles', RoleController::class);
     Route::post('/roles/list', [RoleController::class, 'list'])->name('roles.list');
 

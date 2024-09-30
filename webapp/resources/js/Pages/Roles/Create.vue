@@ -51,10 +51,10 @@ const createRole = () => {
                 <v-form @submit.prevent="createRole">
 
                     <v-text-field v-model="form.title" label="Name" outlined dense required variant="outlined"
-                        :error-messages="form.errors.title" class="mb-4" />
+                        :error-messages="form.errors.title" />
 
                     <v-text-field v-model="form.description" label="Description" outlined dense required
-                        variant="outlined" :error-messages="form.errors.description" class="mb-4" />
+                        variant="outlined" :error-messages="form.errors.description" />
 
                     <v-card title="Permissions" :subtitle="form.errors.permissions ? form.errors.permissions : 'Select permissions for the role'" variant="outlined"
                          :color="form.errors.permissions ? 'red' : ''" :style="form.errors.permissions ? '' : 'border: 1px solid #6b728099'">
@@ -68,7 +68,7 @@ const createRole = () => {
                         </v-card-text>
                     </v-card>
 
-                    <v-btn type="submit" color="black" variant="tonal" class="mt-4">Create</v-btn>
+                    <v-btn type="submit" color="primary" variant="flat" class="mt-4">Create</v-btn>
                 </v-form>
             </v-card-text>
         </v-card>

@@ -28,15 +28,15 @@ defineProps({
             ]" divider="/" />
         </template>
 
-        <v-card class="max-w-7xl mx-auto pa-6 my-6">
+        <v-card class="max-w-7xl mx-auto pa-6">
             <UpdateProfileInformationForm :must-verify-email="mustVerifyEmail" :status="status" />
         </v-card>
 
-        <v-card class="max-w-7xl mx-auto pa-6 my-6">
+        <v-card class="max-w-7xl mx-auto pa-6 mt-4" border>
             <UpdatePasswordForm />
         </v-card>
 
-        <v-card class="max-w-7xl mx-auto pa-6 my-6">
+        <v-card class="max-w-7xl mx-auto pa-6 mt-4" border>
             <DeleteUserForm />
         </v-card>
 

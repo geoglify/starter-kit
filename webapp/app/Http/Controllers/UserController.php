@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
+use Exception;
+use Illuminate\Validation\ValidationException;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -34,6 +36,11 @@ class UserController extends Controller
             // Select specific fields from Users table
 
             $users = User::select('id', 'name', 'email', 'is_ldap')->get();
+
+            // exclude the current user from the list and user with id = 1 (admin)
+            $users = $users->filter(function ($user) {
+                return $user->id != auth()->user()->id && $user->id != 1;
+            });
 
             // Filter and map users using collections
             $filteredUsers = collect($users)->filter(function ($user) use ($search) {
@@ -62,7 +69,6 @@ class UserController extends Controller
                 'perPage' => $itemsPerPage,
                 'currentPage' => $page,
             ]);
-
         } catch (ValidationException $e) {
 
             // Handle validation errors
@@ -70,7 +76,6 @@ class UserController extends Controller
                 'message' => 'Validation failed.',
                 'errors' => $e->errors(),
             ], 422);
-            
         } catch (Exception $e) {
 
             // Handle general errors
@@ -83,31 +88,48 @@ class UserController extends Controller
 
     public function create()
     {
-        return Inertia::render('Users/Create');
+        $roles = Role::all();
+        return Inertia::render('Users/Create', ['roles' => $roles]);
     }
 
     public function store(StoreUserRequest $request)
     {
         User::create($request->validated());
+
+        // get the user that was just created
+        $user = User::where('email', $request->email)->first();
+
+        // assign the roles to the user
+        $user->roles()->sync($request->role_id);
+
         return redirect()->route('users.index');
     }
 
     public function edit(User $user)
     {
+        $user = $user->load('roles');
         $roles = Role::all();
-        return Inertia::render('Users/Edit', ['user' => $user->load('roles'), 'roles' => $roles]);
+
+        return Inertia::render('Users/Edit', ['user' => $user, 'roles' => $roles]);
     }
 
-    public function update(UpdateUserRequest $request, $id)
+    public function update(UpdateUserRequest $request)
     {
+        // get the user
+        $user = User::find($request->user);
+
         //if password is not provided, update other fields
-        if (!$request->password) {
-            $user = User::find($id);
-            $user->update($request->except('password'));
+        if (request('password') == null) {
+            $user->update(request()->except('password'));
         } else {
-            $user = User::find($id);
+            //if password is provided, update all fields
             $user->update($request->validated());
         }
+
+        // assign the roles to the user
+        $user->roles()->sync($request->role_id);
+
+        return redirect()->route('users.index');
     }
 
     public function destroy(User $user)

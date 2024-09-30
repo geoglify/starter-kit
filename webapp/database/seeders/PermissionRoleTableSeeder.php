@@ -13,29 +13,14 @@ class PermissionRoleTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $ids_to_admin = Permission::whereIn('title', [
-            'roles_create',
-            'roles_edit',
-            'roles_destroy',
-            'roles_show',
-            'users_create',
-            'users_edit',
-            'users_destroy',
-            'users_show',
-            'tasks_create',
-            'tasks_edit',
-            'tasks_destroy',
-            'tasks_show'
-        ])->pluck('id');
+        /**
+         * Administrator Role's Permissions
+         */
+        $ids_to_admin = Permission::all()->pluck('id');
 
+        /* 
+        * User Role's Permissions
+        */
         Role::findOrFail(1)->permissions()->sync($ids_to_admin);
-
-        $ids_to_user = Permission::whereIn('title', [
-            'tasks_create',
-            'tasks_edit',
-            'tasks_show'
-        ])->pluck('id');
-
-        Role::findOrFail(2)->permissions()->sync($ids_to_user);
     }
 }

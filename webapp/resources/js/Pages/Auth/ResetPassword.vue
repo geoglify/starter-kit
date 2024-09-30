@@ -51,7 +51,7 @@ const submit = () => {
             <div class="flex items-center justify-end mt-4">
 
                 <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" @click="submit"
-                    color="gray" elevation="0">
+                    color="black" elevation="0">
                     Reset Password
                 </v-btn>
 

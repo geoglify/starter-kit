@@ -35,31 +35,37 @@ class LdapController extends Controller
             $search = strtolower($validated['search'] ?? '');
 
             // Select specific fields from LDAP
-            $users = \LdapRecord\Models\ActiveDirectory\Entry::select('cn', 'sn', 'mail', 'telephonenumber')->get();
+            $users = \LdapRecord\Models\ActiveDirectory\User::select('cn', 'title', 'mail', 'department', 'distinguishedname')->get();
 
             // Filter and map users using collections
             $filteredUsers = collect($users)->filter(function ($user) use ($search) {
 
+                // Check if distinguishedName contains 'OU=Utilizadores' and email is present
+                $isUser = isset($user->distinguishedname[0]) && str_contains($user->distinguishedname[0], 'Utilizadores') && isset($user->mail[0]);
+
+                if (!$isUser) {
+                    return false;
+                }
+
                 // Apply search filter
                 if ($search) {
                     return str_contains(strtolower($user->cn[0] ?? ''), $search) ||
-                        str_contains(strtolower($user->sn[0] ?? ''), $search) ||
+                        str_contains(strtolower($user->title[0] ?? ''), $search) ||
                         str_contains(strtolower($user->mail[0] ?? ''), $search) ||
-                        str_contains(strtolower($user->telephonenumber[0] ?? ''), $search);
+                        str_contains(strtolower($user->department[0] ?? ''), $search);
                 }
 
                 return true;
             })->map(function ($user) {
-
                 // Map user data
                 return [
-                    'name' => (isset($user->cn) && is_array($user->cn) && !empty($user->cn[0])) ? $user->cn[0] : 'N/A',
-                    'username' => (isset($user->sn) && is_array($user->sn) && !empty($user->sn[0])) ? $user->sn[0] : 'N/A',
-                    'email' => (isset($user->mail) && is_array($user->mail) && !empty($user->mail[0])) ? $user->mail[0] : 'N/A',
-                    'telephonenumber' => (isset($user->telephonenumber) && is_array($user->telephonenumber) && !empty($user->telephonenumber[0])) ? $user->telephonenumber[0] : 'N/A',
-                    'is_imported' => User::where('email', isset($user->mail[0]) ? $user->mail[0] : '')->exists(),
+                    'name' => $user->cn[0] ?? 'N/A',
+                    'title' => $user->title[0] ?? 'N/A',
+                    'email' => $user->mail[0] ?? 'N/A',
+                    'department' => $user->department[0] ?? 'N/A',
+                    'is_imported' => User::where('email', $user->mail[0])->exists(),
                 ];
-            })->sortBy('email');
+            })->sortBy('id');
 
             $total = $filteredUsers->count();
 
@@ -117,6 +123,7 @@ class LdapController extends Controller
                     'password' => bcrypt(Str::password(16, true, true, false, false)),
                     'is_ldap' => true,
                 ]);
+
             } else {
                 // Create a new user if it doesn't exist
                 $user = User::create([

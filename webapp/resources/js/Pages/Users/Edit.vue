@@ -13,7 +13,8 @@ const form = useForm({
     email: props.user.email,
     password: '',
     password_confirmation: '',
-    roles: props.user.roles,
+    role_id: props.user.roles && props.user.roles[0] ? props.user.roles[0].id : null,
+    is_ldap: props.user.is_ldap,
 });
 
 const updateUser = () => {
@@ -37,21 +38,34 @@ const updateUser = () => {
             ]" divider="/" />
         </template>
 
-        <v-card class="max-w-7xl mx-auto pa-6 my-6" title="Edit User" subtitle="Edit user details">
+        <v-card class="max-w-7xl mx-auto pa-6" title="Edit User" subtitle="Edit user details">
             <v-card-text>
                 <v-form @submit.prevent="updateUser">
-                    
-                    <v-text-field v-model="form.name" label="Name" outlined dense required variant="outlined" />
-                    
-                    <v-text-field v-model="form.email" label="Email" outlined dense required variant="outlined" />
-                    
-                    <v-text-field v-model="form.password" label="Password" outlined dense variant="outlined" />
-                    
-                    <v-text-field v-model="form.password_confirmation" label="Confirm Password" outlined dense variant="outlined" />
-                    
-                    <v-select v-model="form.roles" label="Role" outlined dense required variant="outlined" :items="props.roles" />  
 
-                    <v-btn type="submit" color="black" variant="tonal" class="mt-4">Update</v-btn>
+                    <v-alert v-if="form.is_ldap" color="black" variant="tonal" class="mb-5">
+                        This user is imported from LDAP. You can't change the email and password.
+                        Only role can be changed.
+                    </v-alert>
+
+                    <v-text-field v-model="form.name" label="Name" required variant="outlined"
+                        :error-messages="form.errors.name" :disabled="form.is_ldap" />
+
+                    <v-text-field v-model="form.email" label="Email" required variant="outlined"
+                        :error-messages="form.errors.email" autocomplete="new-email" :disabled="form.is_ldap" />
+
+                    <v-text-field v-model="form.password" label="Password" variant="outlined"
+                        :error-messages="form.errors.password" type="password" autocomplete="new-password"
+                        :disabled="form.is_ldap" />
+
+                    <v-text-field v-model="form.password_confirmation" label="Confirm Password" variant="outlined"
+                        :error-messages="form.errors.password_confirmation" type="password" autocomplete="new-password"
+                        :disabled="form.is_ldap" />
+
+                    <v-select v-model="form.role_id" label="Role" required variant="outlined" :items="props.roles"
+                        item-value="id" item-title="title" :error-messages="form.errors.role_id"></v-select>
+
+                    <v-btn :href="route('users.index')" color="red" variant="flat" class="mr-2">Cancel</v-btn>
+                    <v-btn type="submit" color="primary" variant="flat">Update</v-btn>
 
                 </v-form>
             </v-card-text>

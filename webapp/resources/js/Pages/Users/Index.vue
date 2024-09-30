@@ -100,11 +100,11 @@ export default {
             ]" divider="/" />
         </template>
 
-        <v-card class="max-w-7xl mx-auto pa-6 my-6" title="Users" subtitle="List of users">
+        <v-card class="max-w-7xl mx-auto pa-6" title="Users" subtitle="List of users">
 
             <template v-slot:append>
-                <v-btn color="black" variant="tonal" :href="route('users.create')" class="ml-2">Create</v-btn>
-                <v-btn color="black" variant="tonal" :href="route('ldap.index')" class="ml-2">Import</v-btn>
+                <v-btn color="primary" variant="flat" :href="route('users.create')" class="ml-2">Create</v-btn>
+                <v-btn color="black" variant="flat" :href="route('ldap.index')" class="ml-2">Import</v-btn>
             </template>
 
 
@@ -117,12 +117,13 @@ export default {
                     :items-length="totalItems" :loading="loading" :search="search" @update:options="loadItems">
 
                     <template v-slot:item.tag="{ item }">
-                        <v-chip v-if="item.is_ldap" color="blue" size="small">LDAP</v-chip>
+                        <v-chip v-if="item.is_ldap" color="black" size="small" label style="width: 60px">LDAP</v-chip>
+                        <v-chip v-else color="primary" size="small" label style="width: 60px">LOCAL</v-chip>
                     </template>
 
                     <template v-slot:item.actions="{ item }">
                         <v-btn color="black" class="ml-2" variant="text" density="comfortable" icon
-                            :href="route('users.edit', item.id)" v-if="!item.is_ldap">
+                            :href="route('users.edit', item.id)">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
                         <v-btn color="red" class="ml-2" variant="text" density="comfortable" icon

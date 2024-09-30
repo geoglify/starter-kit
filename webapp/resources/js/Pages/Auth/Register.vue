@@ -42,8 +42,14 @@ const submit = () => {
 
             <div class="flex items-center justify-end mt-4">
 
+                <v-btn :href="route('login')" color="primary" variant="tonal" elevation="0">
+                    Back to login
+                </v-btn>
+
+                <v-spacer></v-spacer>
+                
                 <v-btn :class="{ 'opacity-25': form.processing }" :readonly="form.processing" @click.prevent="submit"
-                    color="gray" elevation="0">
+                    color="primary" elevation="0" >
                     Register
                 </v-btn>
 

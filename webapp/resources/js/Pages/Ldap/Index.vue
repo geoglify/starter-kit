@@ -19,9 +19,9 @@ export default {
             // Headers for the data table
             headers: [
                 { title: 'Name', key: 'name', align: 'start', sortable: false },
-                { title: 'Username', key: 'username', align: 'start', sortable: false },
+                { title: 'Title', key: 'title', align: 'start', sortable: false },
                 { title: 'Email', key: 'email', align: 'start', sortable: false },
-                { title: 'Telephone', key: 'telephonenumber', align: 'start', sortable: false },
+                { title: 'Department', key: 'department', align: 'start', sortable: false },
                 { title: '', key: 'actions', align: 'end', sortable: false },
             ]
         };
@@ -129,8 +129,7 @@ export default {
             ]" divider="/" />
         </template>
 
-        <v-card class="max-w-7xl mx-auto pa-6 my-6" title="Import Users"
-            subtitle="Select the users LDAP you want to import">
+        <v-card class="max-w-7xl mx-auto pa-6" title="Import Users" subtitle="Select the users LDAP you want to import">
             <v-card-text>
 
                 <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" variant="outlined"
@@ -141,8 +140,8 @@ export default {
 
                     <template v-slot:item.actions="{ item }">
 
-                        <v-btn color="success" class="mr-2" variant="text" v-if="item.is_imported" icon="mdi-check"
-                            density="comfortable" @click="removeUserFromLocal(item)"></v-btn>
+                        <v-btn color="red" class="mr-2" variant="text" v-if="item.is_imported"
+                            icon="mdi-account-minus" density="comfortable" @click="removeUserFromLocal(item)"></v-btn>
 
                         <v-btn color="black" class="mr-2" variant="text" icon="mdi-account-plus" density="comfortable"
                             @click="addUserFromLdap(item)" v-if="!item.is_imported"></v-btn>

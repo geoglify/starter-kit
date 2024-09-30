@@ -10,4 +10,5 @@ psql -v ON_ERROR_STOP=1 --username postgres --dbname postgres <<-EOSQL
     ALTER USER dbadmin WITH SUPERUSER;
     GRANT ALL PRIVILEGES ON DATABASE geoglify TO postgres;
     GRANT ALL PRIVILEGES ON DATABASE geoglify TO dbadmin;
+    CREATE EXTENSION postgis;
 EOSQL

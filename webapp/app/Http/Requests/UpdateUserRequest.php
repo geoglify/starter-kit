@@ -21,12 +21,28 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userId = $this->route('user'); // Assuming you are using route model binding
+
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'role_id' => ['required', 'integer', 'exists:roles,id'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $userId],
             'password' => ['nullable', 'string', 'min:8'],
-            'confirm_password' => ['nullable', 'string', 'same:password'],
+            'password_confirmation' => ['nullable', 'string', 'same:password', 'required_with:password'],
+            'role_id' => ['required', 'integer', 'exists:roles,id'],
+        ];
+    }
+
+    /**
+     * Get the custom validation messages for the request.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'role_id.required' => 'At least one role must be assigned to the user.',
+            'role_id.array' => 'The roles field must be a valid list.',
+            'role_id.min' => 'You must select at least one role.',
         ];
     }
 }

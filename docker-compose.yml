@@ -1,7 +1,8 @@
 services:
   webapp:
     build: ./webapp
-    container_name: webapp
+    image: geoglify/webapp
+    container_name: gwebapp
     restart: always
     environment:
       PHP_OPCACHE_ENABLE: 0
@@ -13,32 +14,25 @@ services:
       - ./webapp:/var/www/webapp
       - geoglify-node-modules-data:/var/www/webapp/node_modules
       - geoglify-vendor-data:/var/www/webapp/vendor
-      - geoglify-storage-data:/var/www/webapp/storage
     healthcheck:
       test: ["CMD", "curl", "-f", "http://webapp/"]
       interval: 30s
       timeout: 10s
       retries: 3
-    depends_on:
-      - database
 
   database:
     build: ./database
-    image: database
+    image: geoglify/database
     restart: always
-    container_name: database
+    container_name: gdatabase
     ports:
       - "5432:5432"
     volumes:
       - geoglify-database-data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=postgres
-      - POSTGRES_PASSWORD=postgres
 
   mailpit:  
     image: axllent/mailpit:latest
-    container_name: mailpit
+    container_name: gmailpit
     restart: always
     ports:
       - "8025:8025"
@@ -48,13 +42,25 @@ services:
 
   redis:
     image: redis:latest
-    container_name: redis
+    container_name: gredis
     restart: always
     command: redis-server --appendonly yes
     volumes:
       - geoglify-redis-data:/data
     ports:
       - 6379:6379
+
+  ldap:
+    image: osixia/openldap:1.5.0
+    container_name: gldap
+    environment:
+        - LDAP_ORGANISATION=exampleorg
+        - LDAP_DOMAIN=example.in
+        - "LDAP_BASE_DN=dc=example,dc=in"
+        - LDAP_ADMIN_PASSWORD=password
+    ports:
+        - 389:389
+        - 636:636
       
 volumes:
   geoglify-vendor-data:

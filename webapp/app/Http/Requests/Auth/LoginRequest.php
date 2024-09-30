@@ -72,16 +72,14 @@ class LoginRequest extends FormRequest
      */
     protected function attemptLdapAuthentication(array $credentials): bool
     {
-        if (env('LDAP_ENABLED', false)) {
-            $connection = $this->getLdapConnection();
+        $connection = $this->getLdapConnection();
 
-            if ($this->isLdapReady($connection) && $connection->auth()->attempt($credentials['email'], $credentials['password'], $this->boolean('remember'))) {
-                $user = User::where('email', $credentials['email'])->first();
+        if ($this->isLdapReady($connection) && $connection->auth()->attempt($credentials['email'], $credentials['password'], $this->boolean('remember'))) {
+            $user = User::where('email', $credentials['email'])->first();
 
-                if ($user) {
-                    Auth::login($user, $this->boolean('remember'));
-                    return true;
-                }
+            if ($user) {
+                Auth::login($user, $this->boolean('remember'));
+                return true;
             }
         }
 
@@ -112,7 +110,12 @@ class LoginRequest extends FormRequest
             $credentials['email'] .= '@' . env('LDAP_DOMAIN', 'local.com');
         }
 
-        if ($this->attemptLdapAuthentication($credentials) || $this->attemptDatabaseAuthentication($credentials)) {
+        if ($this->attemptLdapAuthentication($credentials)) {
+            $this->clearRateLimiter();
+            return;
+        }
+
+        if($this->attemptDatabaseAuthentication($credentials)) {
             $this->clearRateLimiter();
             return;
         }
@@ -123,7 +126,7 @@ class LoginRequest extends FormRequest
             'email' => trans('auth.failed'),
         ]);
     }
-    
+
     /**
      * Clear the rate limiter for the current request.
      */

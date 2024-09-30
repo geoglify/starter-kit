@@ -7,17 +7,19 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import vuetify from "./vuetify";
 import fetchInterceptor from './fetchInterceptor';
+import CountryFlag from 'vue-country-flag-next';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => `${appName} - ${title}`,
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
             .use(fetchInterceptor)
+            .use(CountryFlag)
             .use(vuetify)
             .mount(el);
     },

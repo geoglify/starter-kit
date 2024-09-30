@@ -102,7 +102,7 @@ export default {
         <v-card class="max-w-7xl mx-auto pa-6 my-6" title="Roles" subtitle="List of roles">
 
             <template v-slot:append>
-                <v-btn color="black" variant="tonal" :href="route('roles.create')" class="ml-2">Create</v-btn>
+                <v-btn color="primary" variant="flat" :href="route('roles.create')" class="ml-2">Create</v-btn>
             </template>
 
 

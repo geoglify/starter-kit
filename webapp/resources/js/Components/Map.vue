@@ -21,13 +21,13 @@ export default {
 </script>
 
 <template>
-    <div class="w-full h-full" id="map"></div>
+    <div id="map"></div>
 </template>
 
 <style>
-#app {
-    height: 100vh;
-    width: 100vw;
+#map {
+    height: 100%;
+    width: 100%;
 }
 
 html,

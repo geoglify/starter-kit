@@ -9,9 +9,12 @@
         "directorytree/ldaprecord-laravel": "^3.3",
         "inertiajs/inertia-laravel": "^1.0",
         "laravel/framework": "^11.9",
+        "laravel/pulse": "^1.2",
+        "laravel/reverb": "^1.4.1",
         "laravel/sanctum": "^4.0",
         "laravel/telescope": "^5.2",
         "laravel/tinker": "^2.9",
+        "predis/predis": "^2.2",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {

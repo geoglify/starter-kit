@@ -1,6 +1,6 @@
 <script setup>
 import Map from '@/Components/Map.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 import { Head } from '@inertiajs/vue3';
 </script>
 
@@ -8,7 +8,7 @@ import { Head } from '@inertiajs/vue3';
 
     <Head title="Dashboard" />
 
-    <AuthenticatedLayout>
+    <DashboardLayout>
         
         <template #breadcrumbs>
             <v-breadcrumbs :items="[
@@ -17,9 +17,7 @@ import { Head } from '@inertiajs/vue3';
             ]" divider="/" />
         </template>
 
-        <v-card class="max-w-7xl mx-auto" style="height: 830px">
-            <Map></Map>
-        </v-card>
+        <Map></Map>
 
-    </AuthenticatedLayout>
+    </DashboardLayout>
 </template>

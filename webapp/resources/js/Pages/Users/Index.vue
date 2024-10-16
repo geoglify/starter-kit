@@ -3,6 +3,8 @@ import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 export default {
+  watch: {
+  },
     components: {
         AuthenticatedLayout,
         Head

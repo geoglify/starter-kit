@@ -8,7 +8,8 @@ services:
       PHP_OPCACHE_ENABLE: 0
       PRODUCTION: 0
     ports:
-      - 8080:80
+      - 81:80
+      - 8080:8080
       - 5173:5173
     volumes:
       - ./webapp:/var/www/webapp
@@ -19,6 +20,9 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    depends_on:
+      - database
+      - redis
 
   database:
     build: ./database
@@ -50,6 +54,15 @@ services:
     ports:
       - 6379:6379
 
+  redis-insight:
+    image: redis/redisinsight:latest
+    container_name: gredisinsight
+    restart: always
+    ports:
+      - "5540:5540"
+    volumes:
+      - geoglify-redis-insight-data:/data
+
   ldap:
     image: osixia/openldap:1.5.0
     container_name: gldap
@@ -61,7 +74,21 @@ services:
     ports:
         - 389:389
         - 636:636
-      
+
+  ais-stream:
+    build: ./ais-stream
+    container_name: gaisstream
+    working_dir: /opt/ais-stream
+    environment:
+      - NODE_ENV=production
+      - AISSTREAM_API_KEY=7fb1e16f93a4d520d83a95e325c55e69b3b4fc0b
+      - AIS_SERVER_HOST=aisstream.io
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    command: "node main.js"
+    depends_on:
+      - redis
+    
 volumes:
   geoglify-vendor-data:
   geoglify-storage-data:
@@ -69,3 +96,4 @@ volumes:
   geoglify-node-modules-data:
   geoglify-mailpit-data:
   geoglify-redis-data:
+  geoglify-redis-insight-data:

@@ -5,6 +5,7 @@ WORKDIR /var/www/webapp
 
 # Install additional packages
 RUN apk --no-cache add \
+    git \
     nginx \
     supervisor \
     npm \
@@ -19,6 +20,10 @@ RUN set -ex \
 RUN apk update \
     && apk add --no-cache openldap-dev \
     && docker-php-ext-install ldap
+
+# Install PCNTL extension (for Laravel Reverb)
+RUN docker-php-ext-install pcntl
+RUN docker-php-ext-configure pcntl --enable-pcntl
 
 # Install Postgres extension
 RUN docker-php-ext-install pdo pdo_pgsql

@@ -1,6 +1,7 @@
 <?php
 
-use App\Console\Commands\ShipsSync;
 use Illuminate\Support\Facades\Schedule;
+use App\Jobs\RealtimePositionJanitorJob;
 
-Schedule::job(new ShipsSync)->everyMinute();
+// Schedule the RealtimePositionJanitorJob command to run every minute
+Schedule::job(new RealtimePositionJanitorJob)->everyMinute();

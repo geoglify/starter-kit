@@ -1,0 +1,10 @@
+{
+  "name": "ais-streamer",
+  "version": "1.0.0",
+  "description": "AIS Stream (aisstream.io) for Geoglify",
+  "dependencies": {
+    "ggencoder": "^1.0.8",
+    "redis": "^4.7.0",
+    "ws": "^8.14.2"
+  }
+}
